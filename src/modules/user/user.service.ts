@@ -10,9 +10,17 @@ export class UserService {
   async hashPassword(password: string) {
     return bcrypt.hash(password, 10);
   }
-  async createUser(dto): Promise<CreateUserDto> {
+  async findUserBindEmail(email: string) {
+    return await this.userRepo.findOne({ where: { email } });
+  }
+  async createUser(dto: CreateUserDto): Promise<CreateUserDto> {
     dto.password = await this.hashPassword(dto.password);
-    await this.userRepo.create(dto);
+    await this.userRepo.create({
+      firstName: dto.firstName,
+      userName: dto.userName,
+      email: dto.email,
+      password: dto.password,
+    });
     return dto;
   }
 }
